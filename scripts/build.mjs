@@ -8,9 +8,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 const distDir = path.join(root, 'dist');
 
-const CLIENT_ID = process.env.CLIENT_ID || 'test-client-id';
-const APP_ID = process.env.APP_ID || 'test-app-id';
-
 const isWatch = process.argv.includes('--watch');
 
 // Clean dist
@@ -34,8 +31,6 @@ const buildOptions = {
   minify: !isWatch,
   sourcemap: true,
   define: {
-    __CLIENT_ID__: JSON.stringify(CLIENT_ID),
-    __APP_ID__: JSON.stringify(APP_ID),
     'process.env.NODE_ENV': JSON.stringify('production'),
   },
   loader: {

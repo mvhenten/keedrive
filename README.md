@@ -24,7 +24,7 @@ npm run fix         # Format code
 
 ## Setup
 
-See [SETUP.md](./SETUP.md) for Google Cloud Console configuration.
+Reuses the same GCP project + OAuth client as [walking-windeck](https://github.com/mvhenten/walking-windeck). See [SETUP.md](./SETUP.md) for Drive UI integration setup.
 
 ## Tech Stack
 

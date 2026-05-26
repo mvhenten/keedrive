@@ -1,7 +1,4 @@
-// Build-time defines injected by esbuild
-declare const __CLIENT_ID__: string;
-declare const __APP_ID__: string;
-
-export const CLIENT_ID = __CLIENT_ID__;
-export const APP_ID = __APP_ID__;
+// Public OAuth client ID — not a secret. Shared with walking-windeck (same GCP project).
+export const CLIENT_ID = '740964302491-053r5inogfui83368ftrmh1fqo2ph171.apps.googleusercontent.com';
+export const APP_ID = '740964302491';
 export const SCOPE = 'https://www.googleapis.com/auth/drive.file';

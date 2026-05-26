@@ -31,9 +31,6 @@ jobs:
         run: npm ci
 
       - name: Build
-        env:
-          CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
-          APP_ID: ${{ vars.GOOGLE_APP_ID }}
         run: npm run build
 
       - name: Upload artifact
