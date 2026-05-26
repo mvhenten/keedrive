@@ -1,0 +1,21 @@
+{
+  "name": "keedrive",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Google Drive Open-with handler for KeePass .kdbx files",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "dev": "node scripts/build.mjs --watch",
+    "fix": "prettier --write ."
+  },
+  "dependencies": {
+    "argon2-browser": "^1.18.0",
+    "kdbxweb": "^2.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.3.0"
+  }
+}
