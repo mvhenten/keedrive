@@ -20,6 +20,12 @@ fs.mkdirSync(distDir, { recursive: true });
 fs.copyFileSync(path.join(root, 'index.html'), path.join(distDir, 'index.html'));
 fs.copyFileSync(path.join(root, 'styles.css'), path.join(distDir, 'styles.css'));
 
+// Copy public/ recursively into dist/
+const publicDir = path.join(root, 'public');
+if (fs.existsSync(publicDir)) {
+  fs.cpSync(publicDir, distDir, { recursive: true });
+}
+
 // Build JS bundle
 const buildOptions = {
   entryPoints: [path.join(root, 'src/app.ts')],
