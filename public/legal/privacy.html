@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy — KeeDrive</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <main style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem">
+        <h1>Privacy Policy</h1>
+        <p><em>Effective: May 26, 2026</em></p>
+
+        <h2>What KeeDrive Is</h2>
+        <p>
+          KeeDrive is a browser-based KeePass (.kdbx) viewer that runs entirely in your browser.
+          There is no backend server. No analytics. No cookies. No third-party tracking.
+        </p>
+
+        <h2>What Data We Access</h2>
+        <p>
+          KeeDrive requests the Google OAuth scope
+          <code>https://www.googleapis.com/auth/drive.file</code>. This scope grants access
+          <strong>only</strong> to files you explicitly open with KeeDrive—never your entire Drive.
+        </p>
+        <p>
+          When you choose "Open with → KeeDrive" from Google Drive, the app downloads the selected
+          .kdbx file into your browser's memory and decrypts it locally using the password and key
+          file you provide.
+        </p>
+
+        <h2>What Happens to Your Data</h2>
+        <ul>
+          <li>
+            <strong>Your password and decrypted vault contents never leave your browser.</strong>
+            All decryption happens client-side using
+            <a href="https://github.com/keeweb/kdbxweb">kdbxweb</a>.
+          </li>
+          <li>
+            The OAuth access token is held in memory only and discarded when you close the tab.
+          </li>
+          <li>
+            No data is transmitted to the developer, stored on any server, or shared with third
+            parties.
+          </li>
+          <li>
+            The vault auto-locks after 5 minutes of inactivity; decrypted data is cleared from
+            memory.
+          </li>
+        </ul>
+
+        <h2>Source Code</h2>
+        <p>
+          KeeDrive is open source. You can audit every line of code at
+          <a href="https://github.com/mvhenten/keedrive">github.com/mvhenten/keedrive</a>.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions or concerns? Email
+          <a href="mailto:mvhenten+keedrive@gmail.com">mvhenten+keedrive@gmail.com</a>.
+        </p>
+
+        <p style="margin-top: 2rem">
+          <a href="/keedrive/">← Back to KeeDrive</a>
+        </p>
+      </main>
+    </div>
+  </body>
+</html>
