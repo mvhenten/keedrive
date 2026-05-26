@@ -91,7 +91,7 @@
 - **Category:** `Productivity`
 - **Language:** `English`
 - **Support URL:** `https://github.com/mvhenten/keedrive/issues`
-- **Support email:** `mvhenten+keedrive@gmail.com`  
+- **Support email:** `matthijs.vanhenten+keedrive@gmail.com`  
   **⚠️ CHANGE THIS TO YOUR REAL EMAIL BEFORE PUBLISHING**
 - **Terms of service:** `https://mvhenten.github.io/keedrive/legal/terms.html`
 - **Privacy policy:** `https://mvhenten.github.io/keedrive/legal/privacy.html`
@@ -122,7 +122,7 @@
 
 ## Notes
 
-- **Support email** (`mvhenten+keedrive@gmail.com`) is a placeholder. Update it to your real email before publishing.
+- **Support email** (`matthijs.vanhenten+keedrive@gmail.com`) is a placeholder. Update it to your real email before publishing.
 - If the **banner (220×140)** is strictly required and the icon is rejected, generate one using a script like `scripts/gen-banner.mjs` (not included; adapt from icon generation if needed).
 - **Private listings** do not appear in the public Marketplace search; only you (or your Workspace domain) can install them.
 - If you later want to make the listing **public**, you'll need to submit it for Google review (can take several days).
