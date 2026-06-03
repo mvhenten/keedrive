@@ -127,7 +127,8 @@ export async function downloadFile(fileId: string): Promise<DriveFile> {
   );
 
   if (!metaResponse.ok) {
-    throw new Error(`Failed to fetch file metadata: ${metaResponse.statusText}`);
+    const body = await metaResponse.text().catch(() => '');
+    throw new Error(`Failed to fetch file metadata: ${metaResponse.status} ${metaResponse.statusText} — ${body}`);
   }
 
   const meta = (await metaResponse.json()) as { name: string };
