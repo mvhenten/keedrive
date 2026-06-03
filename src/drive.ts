@@ -1,7 +1,7 @@
 import { CLIENT_ID, SCOPE } from './config.js';
-import type { DriveState, DriveFile } from './types.js';
+import type { DriveFile } from './types.js';
 
-// Minimal GIS type declarations
+// Minimal GIS and gapi type declarations
 declare const google: {
   accounts: {
     oauth2: {
@@ -16,24 +16,80 @@ declare const google: {
       };
     };
   };
+  picker: {
+    PickerBuilder: new () => PickerBuilderType;
+    ViewId: { DOCS: unknown };
+    DocsView: new (viewId: unknown) => DocsViewType;
+    Action: { PICKED: string; CANCEL: string };
+  };
 };
+
+interface PickerBuilderType {
+  addView(view: DocsViewType): PickerBuilderType;
+  setOAuthToken(token: string): PickerBuilderType;
+  setDeveloperKey(key: string): PickerBuilderType;
+  setCallback(callback: (data: PickerCallbackData) => void): PickerBuilderType;
+  build(): { setVisible(visible: boolean): void };
+}
+
+interface DocsViewType {
+  setMimeTypes(mimeTypes: string): DocsViewType;
+  setQuery(query: string): DocsViewType;
+}
+
+declare const gapi: {
+  load(api: string, callback: () => void): void;
+};
+
+interface PickerCallbackData {
+  action: string;
+  docs?: Array<{ id: string; name: string }>;
+}
 
 let accessToken: string | null = null;
 
-export function parseDriveState(): DriveState | null {
-  const params = new URLSearchParams(window.location.search);
-  const stateParam = params.get('state');
-  if (!stateParam) return null;
-
-  try {
-    const state = JSON.parse(decodeURIComponent(stateParam)) as DriveState;
-    if (state.action === 'open' && state.ids && state.ids.length > 0) {
-      return state;
-    }
-  } catch {
-    return null;
+export async function waitForGapi(): Promise<void> {
+  // Wait for gapi script to load if it hasn't yet
+  if (!window.__gapiReady) {
+    await new Promise<void>((resolve) => {
+      window.addEventListener('gapi-ready', () => resolve(), { once: true });
+    });
   }
-  return null;
+
+  // Load the picker library
+  return new Promise<void>((resolve, reject) => {
+    try {
+      gapi.load('picker', () => resolve());
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+export async function openPicker(accessTokenParam: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const docsView = new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setMimeTypes('application/octet-stream')
+      .setQuery('.kdbx');
+
+    const picker = new google.picker.PickerBuilder()
+      .addView(docsView)
+      .setOAuthToken(accessTokenParam)
+      .setCallback((data: PickerCallbackData) => {
+        if (data.action === google.picker.Action.PICKED) {
+          if (data.docs && data.docs.length > 0) {
+            resolve(data.docs[0].id);
+          } else {
+            reject(new Error('No file selected'));
+          }
+        } else if (data.action === google.picker.Action.CANCEL) {
+          reject(new Error('Picker cancelled'));
+        }
+      })
+      .build();
+
+    picker.setVisible(true);
+  });
 }
 
 export async function authorize(userId: string): Promise<string> {

@@ -1,4 +1,4 @@
-import { parseDriveState, authorize, downloadFile } from './drive.js';
+import { waitForGapi, authorize, downloadFile, openPicker } from './drive.js';
 import { loadVault, lockVault } from './vault.js';
 import { showLanding, showLoading, showUnlock, showVault, showError } from './ui.js';
 import type { DriveFile, Entry } from './types.js';
@@ -53,27 +53,52 @@ async function handleUnlock(password: string, keyFile?: File) {
   }
 }
 
-async function main() {
-  // Wait for GIS script to load if it hasn't yet
-  if (!window.__gisReady) {
-    await new Promise<void>((resolve) => window.addEventListener('gis-ready', () => resolve(), { once: true }));
-  }
+async function handleOpenFromDrive() {
   try {
-    const state = parseDriveState();
-
-    if (!state) {
-      showLanding();
-      return;
-    }
-
     showLoading('Authorizing...');
-    await authorize(state.userId);
+    const token = await authorize('');
 
-    const fileId = state.ids[0];
+    showLoading('Opening picker...');
+    const fileId = await openPicker(token);
+
     showLoading('Downloading file...');
     currentFile = await downloadFile(fileId);
 
     showUnlock(currentFile.name, handleUnlock);
+  } catch (error) {
+    const message = (error as Error).message;
+    if (message === 'Picker cancelled') {
+      showLanding(handleOpenFromDrive);
+    } else {
+      showError(`Failed to open file: ${message}`);
+    }
+  }
+}
+
+async function main() {
+  // Wait for both GIS and gapi scripts to load
+  const promises: Promise<void>[] = [];
+  
+  if (!window.__gisReady) {
+    promises.push(
+      new Promise<void>((resolve) => window.addEventListener('gis-ready', () => resolve(), { once: true }))
+    );
+  }
+  
+  if (!window.__gapiReady) {
+    promises.push(
+      new Promise<void>((resolve) => window.addEventListener('gapi-ready', () => resolve(), { once: true }))
+    );
+  }
+  
+  await Promise.all(promises);
+  
+  try {
+    // Load the picker library
+    await waitForGapi();
+    
+    // Show landing with "Open from Drive" button
+    showLanding(handleOpenFromDrive);
   } catch (error) {
     showError(`Initialization failed: ${(error as Error).message}`);
   }

@@ -1,5 +1,8 @@
 # Google Workspace Marketplace Listing — Copy/Paste Cheat Sheet
 
+> **Note:** KeeDrive now uses the Google Drive Picker instead of the "Open with" Marketplace integration.  
+> This file is kept for reference only. The app no longer requires Marketplace SDK setup.
+
 > All values to paste into the Google Workspace Marketplace SDK forms.  
 > **Project number:** `740964302491`
 

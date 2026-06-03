@@ -1,9 +1,3 @@
-export interface DriveState {
-  ids: string[];
-  action: string;
-  userId: string;
-}
-
 export interface Entry {
   uuid: string;
   title: string;
@@ -19,7 +13,10 @@ export interface DriveFile {
   content: ArrayBuffer;
 }
 
-// GIS ready flag set by index.html onload
+// GIS and gapi ready flags set by index.html onload
 declare global {
-  interface Window { __gisReady?: boolean; }
+  interface Window {
+    __gisReady?: boolean;
+    __gapiReady?: boolean;
+  }
 }

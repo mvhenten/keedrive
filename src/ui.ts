@@ -2,14 +2,18 @@ import type { Entry } from './types.js';
 
 const app = () => document.getElementById('app')!;
 
-export function showLanding(): void {
+export function showLanding(onOpen?: () => void): void {
   app().innerHTML = `
     <div class="landing">
       <h1>KeeDrive</h1>
       <p>Open a .kdbx file from Google Drive to view your passwords.</p>
-      <p class="hint">Use "Open with → KeeDrive" from Google Drive.</p>
+      ${onOpen ? '<button id="open-drive-btn" class="primary">Open from Drive</button>' : ''}
     </div>
   `;
+  
+  if (onOpen) {
+    document.getElementById('open-drive-btn')!.addEventListener('click', onOpen);
+  }
 }
 
 export function showLoading(message: string): void {
