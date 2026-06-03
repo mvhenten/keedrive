@@ -54,6 +54,10 @@ async function handleUnlock(password: string, keyFile?: File) {
 }
 
 async function main() {
+  // Wait for GIS script to load if it hasn't yet
+  if (!window.__gisReady) {
+    await new Promise<void>((resolve) => window.addEventListener('gis-ready', () => resolve(), { once: true }));
+  }
   try {
     const state = parseDriveState();
 

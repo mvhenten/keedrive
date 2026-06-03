@@ -18,3 +18,8 @@ export interface DriveFile {
   name: string;
   content: ArrayBuffer;
 }
+
+// GIS ready flag set by index.html onload
+declare global {
+  interface Window { __gisReady?: boolean; }
+}
