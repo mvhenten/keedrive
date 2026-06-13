@@ -2,6 +2,15 @@ import type { Entry } from './types.js';
 
 const app = () => document.getElementById('app')!;
 
+function linkFromUrl(raw: string): { href: string; host: string } {
+  const href = /^[a-z][\w+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    return { href, host: new URL(href).hostname };
+  } catch {
+    return { href, host: raw };
+  }
+}
+
 export function showLanding(onOpen?: () => void): void {
   app().innerHTML = `
     <div class="landing">
@@ -83,17 +92,18 @@ export function showVault(entries: Entry[], fileName: string, onLock: () => void
 
     const entriesEl = document.getElementById('entries')!;
     entriesEl.innerHTML = filtered
-      .map(
-        (e) => `
+      .map((e) => {
+        const link = e.url ? linkFromUrl(e.url) : null;
+        return `
       <div class="entry" data-uuid="${e.uuid}">
         <div class="entry-main">
           <strong>${e.title}</strong>
           ${e.username ? `<span class="username">${e.username}</span>` : ''}
-          ${e.url ? `<a href="${e.url}" target="_blank" rel="noopener">${new URL(e.url).hostname}</a>` : ''}
+          ${link ? `<a href="${link.href}" target="_blank" rel="noopener">${link.host}</a>` : ''}
         </div>
       </div>
-    `,
-      )
+    `;
+      })
       .join('');
 
     entriesEl.addEventListener('click', (event) => {
