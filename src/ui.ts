@@ -2,12 +2,26 @@ import type { Entry } from './types.js';
 
 const app = () => document.getElementById('app')!;
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function linkFromUrl(raw: string): { href: string; host: string } {
-  const href = /^[a-z][\w+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+  const hasScheme = /^[a-z][\w+.-]*:\/\//i.test(raw);
+  const candidate = hasScheme ? raw : `https://${raw}`;
   try {
-    return { href, host: new URL(href).hostname };
+    const parsed = new URL(candidate);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return { href: '#', host: raw };
+    }
+    return { href: parsed.href, host: parsed.hostname };
   } catch {
-    return { href, host: raw };
+    return { href: '#', host: raw };
   }
 }
 
@@ -29,7 +43,7 @@ export function showLoading(message: string): void {
   app().innerHTML = `
     <div class="loading">
       <div class="spinner"></div>
-      <p>${message}</p>
+      <p>${escapeHtml(message)}</p>
     </div>
   `;
 }
@@ -40,7 +54,7 @@ export function showUnlock(
 ): void {
   app().innerHTML = `
     <div class="unlock">
-      <h2>Unlock ${fileName}</h2>
+      <h2>Unlock ${escapeHtml(fileName)}</h2>
       <form id="unlock-form">
         <label>
           Password
@@ -69,7 +83,7 @@ export function showVault(entries: Entry[], fileName: string, onLock: () => void
   app().innerHTML = `
     <div class="vault">
       <header>
-        <h2>${fileName}</h2>
+        <h2>${escapeHtml(fileName)}</h2>
         <div class="actions">
           <input type="search" id="search" placeholder="Search..." />
           <button id="lock-btn">Lock</button>
@@ -95,11 +109,11 @@ export function showVault(entries: Entry[], fileName: string, onLock: () => void
       .map((e) => {
         const link = e.url ? linkFromUrl(e.url) : null;
         return `
-      <div class="entry" data-uuid="${e.uuid}">
+      <div class="entry" data-uuid="${escapeHtml(e.uuid)}">
         <div class="entry-main">
-          <strong>${e.title}</strong>
-          ${e.username ? `<span class="username">${e.username}</span>` : ''}
-          ${link ? `<a href="${link.href}" target="_blank" rel="noopener">${link.host}</a>` : ''}
+          <strong>${escapeHtml(e.title)}</strong>
+          ${e.username ? `<span class="username">${escapeHtml(e.username)}</span>` : ''}
+          ${link ? `<a href="${escapeHtml(link.href)}" target="_blank" rel="noopener">${escapeHtml(link.host)}</a>` : ''}
         </div>
       </div>
     `;
@@ -126,14 +140,15 @@ export function showVault(entries: Entry[], fileName: string, onLock: () => void
 
 function showEntryDetail(entry: Entry, onBack: () => void): void {
   const entriesEl = document.getElementById('entries')!;
+  const link = entry.url ? linkFromUrl(entry.url) : null;
   entriesEl.innerHTML = `
     <div class="entry-detail">
       <button id="back-btn">← Back</button>
-      <h3>${entry.title}</h3>
+      <h3>${escapeHtml(entry.title)}</h3>
       <div class="detail-field">
         <label>Username</label>
         <div class="field-value">
-          <span>${entry.username || '—'}</span>
+          <span>${entry.username ? escapeHtml(entry.username) : '—'}</span>
           ${entry.username ? '<button class="copy-btn" data-value="username">Copy</button>' : ''}
         </div>
       </div>
@@ -147,10 +162,10 @@ function showEntryDetail(entry: Entry, onBack: () => void): void {
       <div class="detail-field">
         <label>URL</label>
         <div class="field-value">
-          ${entry.url ? `<a href="${entry.url}" target="_blank" rel="noopener">${entry.url}</a>` : '<span>—</span>'}
+          ${link ? `<a href="${escapeHtml(link.href)}" target="_blank" rel="noopener">${escapeHtml(entry.url)}</a>` : '<span>—</span>'}
         </div>
       </div>
-      ${entry.notes ? `<div class="detail-field"><label>Notes</label><pre>${entry.notes}</pre></div>` : ''}
+      ${entry.notes ? `<div class="detail-field"><label>Notes</label><pre>${escapeHtml(entry.notes)}</pre></div>` : ''}
     </div>
   `;
 
@@ -186,7 +201,7 @@ export function showError(message: string): void {
   app().innerHTML = `
     <div class="error">
       <h2>Error</h2>
-      <p>${message}</p>
+      <p>${escapeHtml(message)}</p>
       <button onclick="location.reload()">Reload</button>
     </div>
   `;
