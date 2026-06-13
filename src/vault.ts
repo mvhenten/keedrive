@@ -35,17 +35,23 @@ export async function loadVault(
 
   const entries: Entry[] = [];
 
+  function fieldText(value: string | kdbxweb.ProtectedValue | undefined): string {
+    if (!value) return '';
+    if (value instanceof kdbxweb.ProtectedValue) return value.getText();
+    return value.toString();
+  }
+
   function traverseGroup(group: kdbxweb.KdbxGroup) {
     for (const entry of group.entries) {
       // Skip meta entries, recycle bin entries, etc.
       if (entry.fields.get('Title')) {
         entries.push({
           uuid: entry.uuid.id || '',
-          title: entry.fields.get('Title')?.toString() || '',
-          username: entry.fields.get('UserName')?.toString() || '',
-          password: (entry.fields.get('Password') as kdbxweb.ProtectedValue)?.getText() || '',
-          url: entry.fields.get('URL')?.toString() || '',
-          notes: entry.fields.get('Notes')?.toString() || '',
+          title: fieldText(entry.fields.get('Title')),
+          username: fieldText(entry.fields.get('UserName')),
+          password: fieldText(entry.fields.get('Password')),
+          url: fieldText(entry.fields.get('URL')),
+          notes: fieldText(entry.fields.get('Notes')),
         });
       }
     }
