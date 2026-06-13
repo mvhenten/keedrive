@@ -53,11 +53,12 @@ const buildOptions = {
 if (isWatch) {
   const ctx = await esbuild.context(buildOptions);
   await ctx.watch();
-  const { host, port } = await ctx.serve({
+  const { port } = await ctx.serve({
     servedir: distDir,
+    host: '0.0.0.0',
     port: 8000,
   });
-  console.log(`Dev server running at http://${host}:${port}`);
+  console.log(`Dev server running on port ${port} (all interfaces)`);
 } else {
   await esbuild.build(buildOptions);
   console.log('Build complete');

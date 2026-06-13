@@ -1,4 +1,4 @@
-import { CLIENT_ID, SCOPE } from './config.js';
+import { APP_ID, CLIENT_ID, SCOPE } from './config.js';
 import type { DriveFile } from './types.js';
 
 // Minimal GIS and gapi type declarations
@@ -27,6 +27,7 @@ declare const google: {
 interface PickerBuilderType {
   addView(view: DocsViewType): PickerBuilderType;
   setOAuthToken(token: string): PickerBuilderType;
+  setAppId(appId: string): PickerBuilderType;
   setDeveloperKey(key: string): PickerBuilderType;
   setCallback(callback: (data: PickerCallbackData) => void): PickerBuilderType;
   build(): { setVisible(visible: boolean): void };
@@ -74,6 +75,7 @@ export async function openPicker(accessTokenParam: string): Promise<string> {
 
     const picker = new google.picker.PickerBuilder()
       .addView(docsView)
+      .setAppId(APP_ID)
       .setOAuthToken(accessTokenParam)
       .setCallback((data: PickerCallbackData) => {
         if (data.action === google.picker.Action.PICKED) {
