@@ -5,6 +5,7 @@ export interface Entry {
   password: string;
   url: string;
   notes: string;
+  extra: Array<{ label: string; value: string }>;
 }
 
 export interface DriveFile {

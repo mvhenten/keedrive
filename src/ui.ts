@@ -155,7 +155,8 @@ function showEntryDetail(entry: Entry, onBack: () => void): void {
       <div class="detail-field">
         <label>Password</label>
         <div class="field-value">
-          <span>••••••••</span>
+          <span id="password-value">${entry.password ? '••••••••' : '—'}</span>
+          ${entry.password ? '<button class="reveal-btn" id="reveal-btn" type="button" aria-label="Show password" title="Show password">👁</button>' : ''}
           ${entry.password ? '<button class="copy-btn" data-value="password">Copy</button>' : ''}
         </div>
       </div>
@@ -166,10 +167,29 @@ function showEntryDetail(entry: Entry, onBack: () => void): void {
         </div>
       </div>
       ${entry.notes ? `<div class="detail-field"><label>Notes</label><pre>${escapeHtml(entry.notes)}</pre></div>` : ''}
+      ${entry.extra
+        .map(
+          (f) =>
+            `<div class="detail-field"><label>${escapeHtml(f.label)}</label><pre>${escapeHtml(f.value)}</pre></div>`,
+        )
+        .join('')}
     </div>
   `;
 
   document.getElementById('back-btn')!.addEventListener('click', onBack);
+
+  const revealBtn = document.getElementById('reveal-btn');
+  if (revealBtn) {
+    const passwordValue = document.getElementById('password-value')!;
+    revealBtn.addEventListener('click', () => {
+      const revealed = passwordValue.textContent !== '••••••••';
+      passwordValue.textContent = revealed ? '••••••••' : entry.password;
+      revealBtn.textContent = revealed ? '👁' : '🙈';
+      const label = revealed ? 'Show password' : 'Hide password';
+      revealBtn.setAttribute('aria-label', label);
+      revealBtn.setAttribute('title', label);
+    });
+  }
 
   entriesEl.querySelectorAll('.copy-btn').forEach((btn) => {
     btn.addEventListener('click', async () => {

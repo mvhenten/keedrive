@@ -194,6 +194,19 @@ button:hover {
   font-size: 0.875rem;
 }
 
+.reveal-btn {
+  padding: 0.5rem;
+  font-size: 1rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+#password-value {
+  font-family: monospace;
+}
+
 pre {
   white-space: pre-wrap;
   background: var(--input-bg);

@@ -41,10 +41,19 @@ export async function loadVault(
     return value.toString();
   }
 
+  const standardFields = new Set(['Title', 'UserName', 'Password', 'URL', 'Notes']);
+
   function traverseGroup(group: kdbxweb.KdbxGroup) {
     for (const entry of group.entries) {
       // Skip meta entries, recycle bin entries, etc.
       if (entry.fields.get('Title')) {
+        const extra: Array<{ label: string; value: string }> = [];
+        for (const [label, value] of entry.fields) {
+          if (standardFields.has(label)) continue;
+          const text = fieldText(value);
+          if (text) extra.push({ label, value: text });
+        }
+
         entries.push({
           uuid: entry.uuid.id || '',
           title: fieldText(entry.fields.get('Title')),
@@ -52,6 +61,7 @@ export async function loadVault(
           password: fieldText(entry.fields.get('Password')),
           url: fieldText(entry.fields.get('URL')),
           notes: fieldText(entry.fields.get('Notes')),
+          extra,
         });
       }
     }
